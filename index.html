@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+	<head>
+	  <meta charset="UTF-8">
+	  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	  <title>Morada de Piatã - Acompanhamento de Vistorias</title>
+	  <link rel="preconnect" href="https://fonts.googleapis.com">
+	  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+	  <link rel="stylesheet" href="style.css">
+	  <link rel="icon" type="image/png" href="img/favicon.png">
+	</head>
+
+	<body>
+		<header class="topbar">
+		  <div class="topbar-content">
+			<img src="img/moradadepiata.png" alt="Condomínio Morada de Piatã" class="logo">
+			<div class="topbar-text">
+			  <h1>Morada de Piatã</h1>
+			  <span>Acompanhamento de Vistorias</span>
+			</div>
+		  </div>
+		  <div class="topbar-line"></div>
+		</header>
+
+		<main class="container">
+		
+		  <!-- HOME -->
+		  <div class="card" id="cardHome">
+			<h2>O que deseja fazer?</h2>
+
+			<div class="acao">
+			  <button id="btnRegistro" class="btn btn-primary">Registrar Agendamento/Vistoria</button>
+			  <button id="btnDashboard" class="btn btn-primary">Acompanhar Registros (Dashboard)</button>
+			</div>		
+			
+		  </div>
+
+		  <!-- REGISTRO -->
+		  <div class="card hidden" id="cardRegistro">
+			<h2>Informe os dados abaixo</h2>
+
+			<div class="form-grid">
+			  
+			  <!-- TORRE -->
+			  <div class="field">
+				<label>Torre</label>
+					<select id="torre">
+					  <option value="">Selecione</option>
+					  <option value="1">Torre 1</option>
+					  <option value="2">Torre 2</option>
+					  <option value="3">Torre 3</option>
+					  <option value="4">Torre 4</option>
+					  <option value="5">Torre 5</option>
+					</select>
+			  </div>
+			
+			  <!-- APARTAMENTO -->
+			  <div class="field">
+				<label>Apartamento</label>
+					<select id="apto" disabled>
+					  <option value="">Selecione</option>
+					</select>
+			  </div>
+
+			  <!-- STATUS -->
+			  <div class="field">
+				<label>Status</label>
+				<select id="status" disabled>
+				<option value="">Selecione</option>
+				<option value="aguardando_liberacao">Aguardando Liberação da Vistoria</option>
+				<option value="vistoria_agendada">Vistoria Agendada</option>
+				<option value="vistoria_reprovada">Vistoria Reprovada</option>
+				<option value="vistoria_aprovada">Vistoria Aprovada</option>
+				<option value="revistoria_agendada">Revistoria Agendada</option>
+				<option value="revistoria_reprovada">Revistoria Reprovada</option>
+				<option value="revistoria_aprovada">Revistoria Aprovada</option>
+				</select>
+			  </div>
+
+			</div>
+
+			<!-- SALVAR -->
+			<div class="actions">
+			  <button id="btnSalvar" class="btn btn-secondary">Salvar</button>
+			  
+			</div>
+			
+            <!-- FEEDBACK -->
+			<div id="resultado" class="resultado"></div>
+		  </div>
+
+
+		  <!-- DASHBOARD -->
+		  <div class="card hidden" id="cardDashboard">
+			<h2>Dashboard</h2>
+
+			<div class="dashboard-topo">
+			  <span id="ultimaAtualizacao"></span>
+			  <button id="btnAtualizar" class="btn-atualizar"><span class="icon">🔄</span>Atualizar Dados</button>
+			</div>
+
+
+			<!-- GRÁFICOS -->
+			<h3 class="titulo-secao">Aprovação por Torre</h3>
+
+			<div class="graficos-torres">
+
+			  <div class="grafico">
+				<div class="circle" id="grafico-t1"></div>
+				<span>Torre 1</span>
+			  </div>
+
+			  <div class="grafico">
+				<div class="circle" id="grafico-t2"></div>
+				<span>Torre 2</span>
+			  </div>
+
+			  <div class="grafico">
+				<div class="circle" id="grafico-t3"></div>
+				<span>Torre 3</span>
+			  </div>
+
+			  <div class="grafico">
+				<div class="circle" id="grafico-t4"></div>
+				<span>Torre 4</span>
+			  </div>
+
+			  <div class="grafico">
+				<div class="circle" id="grafico-t5"></div>
+				<span>Torre 5</span>
+			  </div>
+
+			</div>
+
+			<!-- CARDS -->
+			<h3 class="titulo-secao">Filtros</h3>
+			
+			<div class="dashboard-cards">
+
+			  <div class="card-resumo aprovado">
+				<h3 id="aprovadas">0</h3>
+				<span>Aprovadas</span>
+				<small id="perc-aprovadas">(0,00%)</small>
+			  </div>
+
+			  <div class="card-resumo reprovado">
+				<h3 id="reprovadas">0</h3>
+				<span>Reprovadas</span>
+				<small id="perc-reprovadas">(0,00%)</small>
+			  </div>
+
+			  <div class="card-resumo agendada">
+				<h3 id="agendadas">0</h3>
+				<span>Agendadas</span>
+				<small id="perc-agendadas">(0,00%)</small>
+			  </div>
+
+			  <div class="card-resumo aguardando">
+				<h3 id="aguardando">0</h3>
+				<span>Aguardando</span>
+				<small id="perc-aguardando">(0,00%)</small>
+			  </div>
+			</div>
+
+			<!-- FILTROS -->
+			<div class="filtros">
+			  <select id="filtroTorre">
+				<option value="todas">Todas as Torres</option>
+				<option value="1">Torre 1</option>
+				<option value="2">Torre 2</option>
+				<option value="3">Torre 3</option>
+				<option value="4">Torre 4</option>
+				<option value="5">Torre 5</option>
+			  </select>
+
+			  <select id="filtroStatus">
+				<option value="todos">Todas as Situações</option>
+				<option value="aguardando">Aguardando</option>
+				<option value="agendada">Agendada</option>
+				<option value="aprovada">Aprovada</option>
+				<option value="reprovada">Reprovada</option>
+			  </select>
+			</div>
+
+			<!-- BOTÕES TORRES -->
+			<div class="abas-torres">
+			  <button class="btn-torre" data-torre="1">Torre 1</button>
+			  <button class="btn-torre" data-torre="2">Torre 2</button>
+			  <button class="btn-torre" data-torre="3">Torre 3</button>
+			  <button class="btn-torre" data-torre="4">Torre 4</button>
+			  <button class="btn-torre" data-torre="5">Torre 5</button>
+			</div>
+
+			<!-- GRID -->
+			<h3 class="subtitulo-secao">Apartamentos por Torre</h3>
+			<div class="grid-unidades"></div>
+			
+		  </div>
+
+		</main>
+		
+		<!-- RETORNAR -->
+		<div id="containerRetornar" class="retornar-container hidden">
+		  <button id="btnRetornar" class="btn btn-tertiary">
+		  <!--<span class="icon">←</span>-->
+		  Retornar
+		  </button>
+		</div>
+		
+		<!-- FOOTER -->
+		<footer class="footer">
+			<span>© Desenvolvido por Santiago (v1.0.0-dev)</span>
+		</footer>
+		
+		<!-- SCRIPT -->
+		<script type="module" src="script.js"></script>
+	</body>
+</html>
