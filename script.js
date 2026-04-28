@@ -51,7 +51,7 @@ function calcularPercentual(valor, total) {
 async function obterDadosAtualizados() {
   const snapshot = await getDocs(collection(db, "vistorias"));
 
-  const dados = [];
+  let dados = [];
 
   snapshot.forEach(doc => {
     dados.push(doc.data());
@@ -451,7 +451,7 @@ if (!mostrarTudoCinza && status) {
 	btnAtualizar.addEventListener("click", async () => {
 
 	  // 🔥 busca Firebase + atualiza cache
-	  const dados = await obterDadosAtualizados();
+	  let dados = await obterDadosAtualizados();
 
 	  // 🔥 atualiza tela
 	  carregarGrid(dados);
@@ -481,7 +481,7 @@ if (!mostrarTudoCinza && status) {
 	  setState("DASHBOARD");
 
 	  // 🔥 busca Firebase + atualiza cache
-	  const dados = await obterDadosAtualizados();
+	  let dados = await obterDadosAtualizados();
 
 	  // 🔥 usa os dados carregados
 	  carregarGrid(dados);
@@ -698,7 +698,7 @@ botoesTorre.forEach(btn => {
     atualizarBotoesTorre(torre);
 
     // 🔥 usa cache (não Firebase)
-    const dados = obterDadosCache();
+    let dados = obterDadosCache();
 
     carregarGrid(dados);
     carregarDashboard(dados);
@@ -718,7 +718,7 @@ filtroTorre.addEventListener("change", () => {
   }
 
   // 🔥 usa cache (não chama Firebase)
-  const dados = obterDadosCache();
+  let dados = obterDadosCache();
 
   carregarGrid(dados);
   carregarDashboard(dados);
@@ -728,7 +728,7 @@ filtroTorre.addEventListener("change", () => {
 	filtroStatus.addEventListener("change", () => {
 
   // 🔥 usa cache
-  const dados = obterDadosCache();
+  let dados = obterDadosCache();
 
   carregarGrid(dados);
 });
