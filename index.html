@@ -10,7 +10,6 @@
 	  <link rel="stylesheet" href="style.css">
 	  <link rel="icon" type="image/png" href="img/favicon.png">
 	</head>
-
 	<body>
 		<header class="topbar">
 		  <div class="topbar-content">
@@ -22,27 +21,19 @@
 		  </div>
 		  <div class="topbar-line"></div>
 		</header>
-
 		<main class="container">
-		
-		  <!-- HOME -->
 		  <div class="card" id="cardHome">
 			<h2>O que deseja fazer?</h2>
 
 			<div class="acao">
 			  <button id="btnRegistro" class="btn btn-primary">Registrar Agendamento/Vistoria</button>
 			  <button id="btnDashboard" class="btn btn-primary">Acompanhar Registros (Dashboard)</button>
-			</div>		
-			
+			</div>	
 		  </div>
-
-		  <!-- REGISTRO -->
 		  <div class="card hidden" id="cardRegistro">
 			<h2>Informe os dados abaixo</h2>
-
 			<div class="form-grid">
-			  
-			  <!-- TORRE -->
+
 			  <div class="field">
 				<label>Torre</label>
 					<select id="torre">
@@ -54,21 +45,18 @@
 					  <option value="5">Torre 5</option>
 					</select>
 			  </div>
-			
-			  <!-- APARTAMENTO -->
 			  <div class="field">
 				<label>Apartamento</label>
 					<select id="apto" disabled>
 					  <option value="">Selecione</option>
 					</select>
 			  </div>
-
-			  <!-- STATUS -->
 			  <div class="field">
 				<label>Status</label>
 				<select id="status" disabled>
 				<option value="">Selecione</option>
 				<option value="aguardando_liberacao">Aguardando Liberação da Vistoria</option>
+				<option value="agendamento_liberado">Agendamento Liberado</option>
 				<option value="vistoria_agendada">Vistoria Agendada</option>
 				<option value="vistoria_reprovada">Vistoria Reprovada</option>
 				<option value="vistoria_aprovada">Vistoria Aprovada</option>
@@ -77,31 +65,17 @@
 				<option value="revistoria_aprovada">Revistoria Aprovada</option>
 				</select>
 			  </div>
-
 			</div>
-
-			<!-- SALVAR -->
 			<div class="actions">
 			  <button id="btnSalvar" class="btn btn-secondary">Salvar</button>
-			  
 			</div>
-			
-			<!-- AVISO -->
 			<p class="aviso-registro">
 			  *Registre apenas o status referente a sua unidade.
 			</p>
-
-			
-            <!-- FEEDBACK -->
 			<div id="resultado" class="resultado"></div>
 		  </div>
-
-
-		  <!-- DASHBOARD -->
 		  <div class="card hidden" id="cardDashboard">
 			<h2>Dashboard</h2>
-			
-			<!-- ATUALIZADO EM -->
 			<div class="dashboard-topo">
 			  <span>Última atualização: 27/04/2026 19:40:22</span>
 			  <button id="btnAtualizar" class="btn-atualizar">
@@ -109,80 +83,57 @@
 				Atualizar Dados
 			  </button>
 			</div>
-
-
-			<!-- GRÁFICOS -->
 			<h3 class="titulo-secao">Aprovação por Torre</h3>
-
 			<div class="graficos-torres">
-
 			  <div class="grafico">
 				<div class="circle" id="grafico-t1"></div>
 				<span>Torre 1</span>
 			  </div>
-
 			  <div class="grafico">
 				<div class="circle" id="grafico-t2"></div>
 				<span>Torre 2</span>
 			  </div>
-
 			  <div class="grafico">
 				<div class="circle" id="grafico-t3"></div>
 				<span>Torre 3</span>
 			  </div>
-
 			  <div class="grafico">
 				<div class="circle" id="grafico-t4"></div>
 				<span>Torre 4</span>
 			  </div>
-
 			  <div class="grafico">
 				<div class="circle" id="grafico-t5"></div>
 				<span>Torre 5</span>
 			  </div>
-
 			</div>
-			
-			<!-- LINHA -->
 			<div class="divisor-secao"></div>
-
-			<!-- CARDS -->
 			<h3 class="titulo-secao">Detalhes</h3>
-			
 			<div class="dashboard-cards">
-
 			  <div class="card-resumo aprovado">
 				<h3 id="aprovadas">0</h3>
 				<span>Aprovadas</span>
 				<small id="perc-aprovadas">(0,00%)</small>
 			  </div>
-
 			  <div class="card-resumo reprovado">
 				<h3 id="reprovadas">0</h3>
 				<span>Reprovadas</span>
 				<small id="perc-reprovadas">(0,00%)</small>
 			  </div>
-
 			  <div class="card-resumo agendada">
 				<h3 id="agendadas">0</h3>
 				<span>Agendadas</span>
 				<small id="perc-agendadas">(0,00%)</small>
 			  </div>
-
 			  <div class="card-resumo aguardando">
 				<h3 id="aguardando">0</h3>
 				<span>Aguardando</span>
 				<small id="perc-aguardando">(0,00%)</small>
 			  </div>
 			</div>
-
 			<h3 class="titulo-secao">Filtros</h3>
-			<!-- FILTROS -->
 			<div class="filtros">
-			
 			<div class="filtro-item">
 			<label>Torre</label>
-			
 			  <select id="filtroTorre">
 				<option value="todas">Todas</option>
 				<option value="1">Torre 1</option>
@@ -192,8 +143,6 @@
 				<option value="5">Torre 5</option>
 			  </select>
 			  </div>
-
-			
 			  <div class="filtro-item">
 			  <label>Situação</label>
 			  <select id="filtroStatus">
@@ -205,8 +154,6 @@
 			  </select>
 			</div>
 			</div>
-
-			<!-- BOTÕES TORRES -->
 			<div class="abas-torres">
 			  <button class="btn-torre" data-torre="1">Torre 1</button>
 			  <button class="btn-torre" data-torre="2">Torre 2</button>
@@ -214,28 +161,18 @@
 			  <button class="btn-torre" data-torre="4">Torre 4</button>
 			  <button class="btn-torre" data-torre="5">Torre 5</button>
 			</div>
-
-			<!-- GRID -->
 			<h3 class="subtitulo-secao">Apartamentos por Torre</h3>
 			<div class="grid-unidades"></div>
-			
 		  </div>
-
 		</main>
-		
-		<!-- RETORNAR -->
 		<div id="containerRetornar" class="retornar-container hidden">
 		  <button id="btnRetornar" class="btn btn-tertiary">
 		  Retornar
 		  </button>
 		</div>
-		
-		<!-- RODAPÉ -->
 		<footer class="footer">
 			<span>© Desenvolvido por Santiago (v1.0.1-dev)</span>
 		</footer>
-		
-		<!-- SCRIPT -->
 		<script type="module" src="script.js"></script>
 	</body>
 </html>
