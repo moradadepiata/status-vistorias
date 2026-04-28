@@ -3,7 +3,7 @@
 	<head>
 	  <meta charset="UTF-8">
 	  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	  <title>Morada de Piatã - Acompanhamento de Vistorias</title>
+	  <title>Morada de Piatã - Status das Vistorias</title>
 	  <link rel="preconnect" href="https://fonts.googleapis.com">
 	  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -17,7 +17,7 @@
 			<img src="img/moradadepiata.png" alt="Condomínio Morada de Piatã" class="logo">
 			<div class="topbar-text">
 			  <h1>Morada de Piatã</h1>
-			  <span>Acompanhamento de Vistorias</span>
+			  <span>Status das Vistorias</span>
 			</div>
 		  </div>
 		  <div class="topbar-line"></div>
@@ -86,6 +86,12 @@
 			  
 			</div>
 			
+			<!-- AVISO -->
+			<p class="aviso-registro">
+			  *Registre apenas o status referente a sua unidade.
+			</p>
+
+			
             <!-- FEEDBACK -->
 			<div id="resultado" class="resultado"></div>
 		  </div>
@@ -94,10 +100,14 @@
 		  <!-- DASHBOARD -->
 		  <div class="card hidden" id="cardDashboard">
 			<h2>Dashboard</h2>
-
+			
+			<!-- ATUALIZADO EM -->
 			<div class="dashboard-topo">
-			  <span id="ultimaAtualizacao"></span>
-			  <button id="btnAtualizar" class="btn-atualizar"><span class="icon">🔄</span>Atualizar Dados</button>
+			  <span>Última atualização: 27/04/2026 19:40:22</span>
+			  <button id="btnAtualizar" class="btn-atualizar">
+				<span class="icon">🔄</span>
+				Atualizar Dados
+			  </button>
 			</div>
 
 
@@ -132,9 +142,12 @@
 			  </div>
 
 			</div>
+			
+			<!-- LINHA -->
+			<div class="divisor-secao"></div>
 
 			<!-- CARDS -->
-			<h3 class="titulo-secao">Filtros</h3>
+			<h3 class="titulo-secao">Detalhes</h3>
 			
 			<div class="dashboard-cards">
 
@@ -163,24 +176,34 @@
 			  </div>
 			</div>
 
+			<h3 class="titulo-secao">Filtros</h3>
 			<!-- FILTROS -->
 			<div class="filtros">
+			
+			<div class="filtro-item">
+			<label>Torre</label>
+			
 			  <select id="filtroTorre">
-				<option value="todas">Todas as Torres</option>
+				<option value="todas">Todas</option>
 				<option value="1">Torre 1</option>
 				<option value="2">Torre 2</option>
 				<option value="3">Torre 3</option>
 				<option value="4">Torre 4</option>
 				<option value="5">Torre 5</option>
 			  </select>
+			  </div>
 
+			
+			  <div class="filtro-item">
+			  <label>Situação</label>
 			  <select id="filtroStatus">
-				<option value="todos">Todas as Situações</option>
+				<option value="todos">Todas</option>
 				<option value="aguardando">Aguardando</option>
 				<option value="agendada">Agendada</option>
 				<option value="aprovada">Aprovada</option>
 				<option value="reprovada">Reprovada</option>
 			  </select>
+			</div>
 			</div>
 
 			<!-- BOTÕES TORRES -->
@@ -203,12 +226,11 @@
 		<!-- RETORNAR -->
 		<div id="containerRetornar" class="retornar-container hidden">
 		  <button id="btnRetornar" class="btn btn-tertiary">
-		  <!--<span class="icon">←</span>-->
 		  Retornar
 		  </button>
 		</div>
 		
-		<!-- FOOTER -->
+		<!-- RODAPÉ -->
 		<footer class="footer">
 			<span>© Desenvolvido por Santiago (v1.0.0-dev)</span>
 		</footer>

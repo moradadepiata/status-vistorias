@@ -215,6 +215,14 @@ body {
   grid-column: span 2;
 }
 
+.aviso-registro {
+  margin-top: 10px;
+  font-size: 12px;
+  color: #777;
+  text-align: center;
+  font-style: italic;
+}
+
 /* ================= FEEDBACK ================= */
 .resultado {
   margin-top: 14px;
@@ -277,6 +285,35 @@ body {
   transform: scale(0.97);
 }
 
+/* ================= ATUALIZAR ================= */
+
+.dashboard-topo {
+  display: flex;
+  flex-direction: column; /* 🔥 empilha */
+  align-items: flex-start; /* 🔥 alinha à esquerda */
+  gap: 6px; /* 🔥 espaço entre texto e botão */
+  margin-bottom: 10px;
+  font-size: 12px;
+  color: #666;
+}
+
+.btn-atualizar {
+  background-color: #f0f0f0;
+  border: 1px solid #ccc; /* 🔥 borda cinza */
+  color: var(--verde);
+  font-weight: 600;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  padding: 6px 10px; /* 🔥 dá formato de botão */
+  border-radius: 8px; /* 🔥 arredondado leve */
+  transition: all 0.15s ease;
+}
+
+
 
 /* ================= DASHBOARD GRÁFICOS ================= */
 .titulo-secao {
@@ -297,9 +334,8 @@ body {
 .graficos-torres {
   display: flex;
   justify-content: center;
-  gap: 16px; /* 🔥 controla o espaçamento manualmente */
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   width: 100%;
 }
 
@@ -346,6 +382,12 @@ body {
   margin-bottom: 6px; /* 🔥 reduz MUITO */
 }
 
+.divisor-secao {
+  width: 100%;
+  height: 1px;
+  background-color: #e0e0e0;
+  margin: 12px 0 6px;
+}
 
 
 /* ================= DASHBOARD CARDS ================= */
@@ -405,14 +447,42 @@ body {
   color: #1d4ed8;
 }
 
+/* ================= FILTROS ================= */
+.filtros {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.filtro-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.filtro-item label {
+  font-size: 12px;
+  color: #666;
+  font-weight: 500;
+  text-align: center;
+}
+
+.filtros select {
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  transition: border 0.15s ease;
+  font-size: 13px;
+}
+
+.filtros select:focus {
+  outline: none;
+  border-color: var(--verde);
+  box-shadow: 0 0 0 2px rgba(31, 122, 77, 0.15);
+}
+
 /* ================= ABAS TORRES ================= */
-
-
-
-
-
-
-
 
 .abas-torres {
   display: flex;
@@ -433,13 +503,11 @@ body {
   cursor: pointer;
 }
 
-/* estado ativo */
 .btn-torre.active {
   color: #fff;
   border: none;
 }
 
-/* cores por torre */
 .btn-torre[data-torre="1"].active {
   background-color: #d32f2f; /* vermelho */
 }
@@ -459,78 +527,6 @@ body {
 .btn-torre[data-torre="5"].active {
   background-color: #eb31c5; /* rosa */
 }
-
-/* ================= RETORNAR ================= */
-
-.retornar-container {
-  display: flex;
-  justify-content: center;
-  margin-top: 10px;
-}
-
-.retornar-container.hidden {
-  display: none;
-}
-
-.retornar-container button:hover {
-  opacity: 0.6;
-}
-
-.retornar-container button:active {
-  transform: scale(0.97);
-}
-
-
-/* ================= FOOTER ================= */
-
-.footer {
-  text-align: center;
-  font-size: 12px;
-  color: #888;
-  padding: 12px 0;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* ================= FILTROS ================= */
-.filtros {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 16px;
-}
-
-.filtros select {
-  padding: 8px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  background-color: #fff;
-  transition: border 0.15s ease;
-  font-size: 13px;
-}
-
-.filtros select:focus {
-  outline: none;
-  border-color: var(--verde);
-  box-shadow: 0 0 0 2px rgba(31, 122, 77, 0.15);
-}
-
-
 
 /* ================= GRID ================= */
 .grid-unidades {
@@ -603,26 +599,32 @@ body {
   margin-left: 4px;
 }
 
+/* ================= RETORNAR ================= */
 
-/*atualização*/
-
-.dashboard-topo {
+.retornar-container {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-  font-size: 10px;
-  color: #666;
+  justify-content: center;
+  margin-top: 10px;
 }
 
-.btn-atualizar {
-  background: none;
-  border: none;
-  color: var(--verde);
-  font-size: 10px;
-  font-weight: 600;
-  cursor: pointer;
-  display: flex;
-  gap: 1px;
-  
+.retornar-container.hidden {
+  display: none;
+}
+
+.retornar-container button:hover {
+  opacity: 0.6;
+}
+
+.retornar-container button:active {
+  transform: scale(0.97);
+}
+
+
+/* ================= RODAPÉ ================= */
+
+.footer {
+  text-align: center;
+  font-size: 12px;
+  color: #888;
+  padding: 12px 0;
 }

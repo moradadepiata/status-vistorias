@@ -1,6 +1,6 @@
 import { getDocs, collection } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { db } from "./firebase.js";
-import { doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { doc, setDoc, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 // ================= TRADUZ STATUS =================
 function traduzirStatus(status) {
@@ -17,23 +17,77 @@ function traduzirStatus(status) {
 }
 
 // ================= FORMATA DATA E HORA =================
-function formatarData(data) {
-  const d = new Date(data);
+function formatarDataHora(data) {
+	const d = new Date(data);
 
-  const dia = String(d.getDate()).padStart(2, "0");
-  const mes = String(d.getMonth() + 1).padStart(2, "0");
-  const ano = d.getFullYear();
+	const dia = String(d.getDate()).padStart(2, "0");
+	const mes = String(d.getMonth() + 1).padStart(2, "0");
+	const ano = d.getFullYear();
 
-  const hora = String(d.getHours()).padStart(2, "0");
-  const minuto = String(d.getMinutes()).padStart(2, "0");
+	const hora = String(d.getHours()).padStart(2, "0");
+	const minuto = String(d.getMinutes()).padStart(2, "0");
+	const segundo = String(d.getSeconds()).padStart(2, "0");
 
-  return `${dia}/${mes}/${ano} ${hora}:${minuto}`;
+	return `${dia}/${mes}/${ano} ${hora}:${minuto}:${segundo}`;
 }
 
 function calcularPercentual(valor, total) {
   if (total === 0) return "0,00";
   return ((valor / total) * 100).toFixed(2).replace(".", ",");
 }
+
+
+
+
+
+
+
+
+
+
+
+// ================= CACHE + FIREBASE =================
+
+async function obterDadosAtualizados() {
+  const snapshot = await getDocs(collection(db, "vistorias"));
+
+  const dados = [];
+
+  snapshot.forEach(doc => {
+    dados.push(doc.data());
+  });
+
+  // salva no cache
+  localStorage.setItem("vistorias_cache", JSON.stringify(dados));
+  localStorage.setItem("vistorias_cache_data", new Date().toISOString());
+
+  return dados;
+}
+
+function obterDadosCache() {
+  const cache = localStorage.getItem("vistorias_cache");
+
+  if (!cache) return [];
+
+  return JSON.parse(cache);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // ================= GRÁFICOS =================
 function animarGrafico(element, percentual, cor) {
@@ -58,67 +112,6 @@ function animarGrafico(element, percentual, cor) {
   }, 16);
 }
 
-// ================= SALVAR NO CACHE =================
-function salvarCache(dados) {
-  localStorage.setItem("vistorias_cache", JSON.stringify(dados));
-  localStorage.setItem("vistorias_cache_data", new Date().toISOString());
-}
-
-// ================= OBTER CACHE =================
-function obterCache() {
-  const dados = localStorage.getItem("vistorias_cache");
-  const data = localStorage.getItem("vistorias_cache_data");
-
-  if (!dados || !data) return null;
-
-  return {
-    dados: JSON.parse(dados),
-    data: new Date(data)
-  };
-}
-
-// ================= DATA CACHE =================
-
-
-// ================= CARREGAR CACHE =================
-async function carregarDados(forcarAtualizacao = false) {
-
-  const cache = obterCache();
-
-  // 🔹 usa cache se existir e não for forçado
-  if (cache && !forcarAtualizacao) {
-    atualizarInfoCache(cache.data);
-    return cache.dados;
-  }
-
-	// 🔹 busca no Firebase
-	//const snapshot = await getDocs(collection(db, "vistorias"));
-	const snapshot = await getDocs(collection(db, "vistorias"));
-
-	const dados = [];
-
-	snapshot.forEach(doc => {
-	  dados.push(doc.data());
-	});
-
-  // 🔹 salva cache
-  salvarCache(dados);
-  atualizarInfoCache(new Date());
-
-  return dados;
-}
-// ================= ATUALIZAR CACHE =================
-function atualizarInfoCache(data) {
-  const el = document.getElementById("ultimaAtualizacao");
-
-  if (!data) {
-    el.textContent = "Sem dados em cache";
-    return;
-  }
-
-  el.textContent = "Atualizado em: " + formatarData(data);
-}
-
 document.addEventListener("DOMContentLoaded", () => {
 	// ================= ELEMENTOS =================
 	const selectTorre = document.getElementById("torre");
@@ -136,15 +129,8 @@ document.addEventListener("DOMContentLoaded", () => {
 	const filtroStatus = document.getElementById("filtroStatus");
 	
 	const botoesTorre = document.querySelectorAll(".btn-torre");
-
-// ================= ATUALIZAR CACHE =================
-document.getElementById("btnAtualizar").addEventListener("click", async () => {
-  const dados = await carregarDados(true);
-
-  carregarDashboard(dados);
-  carregarGrid(dados);
-  carregarGraficos(dados);
-});
+	
+	const btnAtualizar = document.getElementById("btnAtualizar");
 	
 	// ================= FUNÇÕES =================
 	function setState(state) {
@@ -179,17 +165,17 @@ document.getElementById("btnAtualizar").addEventListener("click", async () => {
 		if (state === "DASHBOARD") {
 		  cardDashboard.classList.remove("hidden");
 		  containerRetornar.classList.remove("hidden");
-		  
-		  //OBTEM CACHE AO ABRIR DASHBOARD
-		  const cache = obterCache();
-		  if (cache) {
-			atualizarInfoCache(cache.data);
-		  } else {
-			atualizarInfoCache(null);
-		  }
-		  
-		  
+
 		  carregarDashboard();
+
+		// ================= ATUALIZADO EM =================
+		const elAtualizacao = document.querySelector(".dashboard-topo span");
+
+		const agora = new Date();
+
+		const dataFormatada = formatarDataHora(agora);
+
+		elAtualizacao.textContent = "Última atualização: " + dataFormatada;
 		}
 
 	}
@@ -219,6 +205,8 @@ document.getElementById("btnAtualizar").addEventListener("click", async () => {
 		}
 		return apartamentos;
 	}
+
+
 	
 	// ================= BUSCA STATUS SALVO =================
 	async function carregarStatusSalvo(torre, apartamento) {
@@ -241,15 +229,11 @@ document.getElementById("btnAtualizar").addEventListener("click", async () => {
 	}
 
 async function carregarDashboard(dados = null) {
-
-  const torreSelecionada = filtroTorre.value;
-
+	const torreSelecionada = filtroTorre.value;
   try {
-
-    // 🔥 usa cache se não vier dados
     if (!dados) {
-      dados = await carregarDados();
-    }
+	dados = obterDadosCache();
+}
 
     let total = 0;
     let aprovadas = 0;
@@ -257,66 +241,68 @@ async function carregarDashboard(dados = null) {
     let agendadas = 0;
     let aguardando = 0;
 
-    dados.forEach(data => {
+	dados.forEach(data => {
 
-      // 🔥 FILTRO POR TORRE (mantido)
-      if (
-        torreSelecionada !== "todas" &&
-        String(data.torre) !== String(torreSelecionada)
-      ) {
-        return;
-      }
+	  // 🔥 FILTRO POR TORRE
+		if (
+		  torreSelecionada !== "todas" &&
+		  String(data.torre) !== String(torreSelecionada)
+		) {
+		  return;
+		}
 
-      total++;
+	  total++;
 
-      const status = data.status;
+	  const status = data.status;
 
-      if (status.includes("aprovada")) {
-        aprovadas++;
-      }
-      else if (
-        status.includes("reprovada") ||
-        status.includes("revistoria_agendada")
-      ) {
-        reprovadas++;
-      }
-      else if (status.includes("agendada")) {
-        agendadas++;
-      }
-      else if (status.includes("aguardando")) {
-        aguardando++;
-      }
+if (status.includes("aprovada")) {
+  aprovadas++;
+}
+else if (
+  status.includes("reprovada") ||
+  status.includes("revistoria_agendada")
+) {
+  reprovadas++;
+}
+else if (status.includes("agendada")) {
+  agendadas++;
+}
+else if (status.includes("aguardando")) {
+  aguardando++;
+}
+	});
 
-    });
 
-    // 🔥 atualização UI (mantida)
-    document.getElementById("aprovadas").textContent = aprovadas;
-    document.getElementById("reprovadas").textContent = reprovadas;
-    document.getElementById("agendadas").textContent = agendadas;
-    document.getElementById("aguardando").textContent = aguardando;
 
-    document.getElementById("perc-aprovadas").textContent =
-      `(${calcularPercentual(aprovadas, total)}%)`;
+document.getElementById("aprovadas").textContent = aprovadas;
+document.getElementById("reprovadas").textContent = reprovadas;
+document.getElementById("agendadas").textContent = agendadas;
+document.getElementById("aguardando").textContent = aguardando;
 
-    document.getElementById("perc-reprovadas").textContent =
-      `(${calcularPercentual(reprovadas, total)}%)`;
+document.getElementById("perc-aprovadas").textContent =
+  `(${calcularPercentual(aprovadas, total)}%)`;
 
-    document.getElementById("perc-agendadas").textContent =
-      `(${calcularPercentual(agendadas, total)}%)`;
+document.getElementById("perc-reprovadas").textContent =
+  `(${calcularPercentual(reprovadas, total)}%)`;
 
-    document.getElementById("perc-aguardando").textContent =
-      `(${calcularPercentual(aguardando, total)}%)`;
+document.getElementById("perc-agendadas").textContent =
+  `(${calcularPercentual(agendadas, total)}%)`;
 
+document.getElementById("perc-aguardando").textContent =
+  `(${calcularPercentual(aguardando, total)}%)`;
+  
+  
+  
+  
   } catch (error) {
     console.error("Erro ao carregar dashboard:", error);
   }
 }
 
 async function carregarGraficos(dados = null) {
-
   if (!dados) {
-    dados = await carregarDados();
-  }
+  dados = obterDadosCache();
+	}
 
   const torres = {
     1: { total: 0, aprovadas: 0 },
@@ -326,8 +312,7 @@ async function carregarGraficos(dados = null) {
     5: { total: 0, aprovadas: 0 }
   };
 
-  snapshot.forEach(doc => {
-    const d = doc.data();
+  dados.forEach(d => {
     const torre = d.torre;
 
     torres[torre].total++;
@@ -343,7 +328,7 @@ async function carregarGraficos(dados = null) {
     2: "#fbc02d",
     3: "#1976d2",
     4: "#388e3c",
-    5: "#e91e63"
+    5: "#eb31c5"
   };
 
   Object.keys(torres).forEach(t => {
@@ -374,15 +359,16 @@ novoGrid.classList.add("grid-unidades");
 
 const mostrarTudoCinza = torreSelecionada === "todas";
 
-  const snapshot = await getDocs(collection(db, "vistorias"));
+  if (!dados) {
+  dados = obterDadosCache();
+	}
 
-  const dados = {};
+  const mapa = {};
 
-  snapshot.forEach(doc => {
-    const d = doc.data();
-    const key = `${d.torre}_${d.apartamento}`;
-    dados[key] = d.status;
-  });
+	dados.forEach(d => {
+	  const key = `${d.torre}_${d.apartamento}`;
+	  mapa[key] = d.status;
+	});
 
   for (let andar = 17; andar >= 0; andar--) {
 
@@ -407,7 +393,7 @@ const mostrarTudoCinza = torreSelecionada === "todas";
       div.textContent = numero;
 
       const key = `${torreSelecionada}_${numero}`;
-      const status = dados[key];
+      const status = mapa[key];
 
 if (!mostrarTudoCinza && status) {
 
@@ -462,25 +448,46 @@ if (!mostrarTudoCinza && status) {
 
 	// ================= EVENTOS =================
 
+	btnAtualizar.addEventListener("click", async () => {
+
+	  // 🔥 busca Firebase + atualiza cache
+	  const dados = await obterDadosAtualizados();
+
+	  // 🔥 atualiza tela
+	  carregarGrid(dados);
+	  carregarDashboard(dados);
+	  carregarGraficos(dados);
+
+	  // 🔥 atualiza horário
+	  const elAtualizacao = document.querySelector(".dashboard-topo span");
+	  const agora = new Date();
+	  const dataFormatada = formatarDataHora(agora);
+
+	  elAtualizacao.textContent = "Última atualização: " + dataFormatada;
+	});
+
+
 	btnRegistro.addEventListener("click", () => {
 		setState("REGISTRO");
 	});
 
-btnDashboard.addEventListener("click", async () => {
+	btnDashboard.addEventListener("click", async () => {
+		// 🔥 RESET COMPLETO
+	  filtroTorre.value = "todas";
+	  filtroStatus.value = "todos";
 
-  filtroTorre.value = "todas";
-  filtroStatus.value = "todos";
+	  atualizarBotoesTorre(null);
 
-  atualizarBotoesTorre(null);
+	  setState("DASHBOARD");
 
-  setState("DASHBOARD");
+	  // 🔥 busca Firebase + atualiza cache
+	  const dados = await obterDadosAtualizados();
 
-  const dados = await carregarDados();
-
-  carregarGrid(dados);
-  carregarDashboard(dados);
-  carregarGraficos(dados);
-});
+	  // 🔥 usa os dados carregados
+	  carregarGrid(dados);
+	  //carregarDashboard(dados);
+	  carregarGraficos(dados);
+	});
 
 	btnRetornar.addEventListener("click", () => {
 		// reset do formulário
@@ -536,6 +543,47 @@ btnDashboard.addEventListener("click", async () => {
 			status: selectStatus.value,
 			atualizadoEm: dataAgora
 		});
+
+
+
+
+
+
+
+
+
+
+
+		// 🔥 ATUALIZA CACHE SEM PERDER DADOS
+		let cache = obterDadosCache();
+
+		// remove se já existir (mesmo apto/torre)
+		cache = cache.filter(item =>
+		  !(item.torre == selectTorre.value && item.apartamento == selectApto.value)
+		);
+
+		// adiciona novo registro
+		cache.push({
+		  torre: selectTorre.value,
+		  apartamento: selectApto.value,
+		  status: selectStatus.value,
+		  atualizadoEm: dataAgora
+		});
+
+		// salva novamente
+		localStorage.setItem("vistorias_cache", JSON.stringify(cache));
+		localStorage.setItem("vistorias_cache_data", new Date().toISOString());
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 
 		const statusTexto = traduzirStatus(selectStatus.value);
 		const dataFormatada = formatarDataHora(dataAgora);
@@ -601,14 +649,13 @@ btnDashboard.addEventListener("click", async () => {
 
 	});
 
-	selectStatus.addEventListener("change", () => {
-	  resultado.innerHTML = "";
-	});
-
 	selectApto.addEventListener("change", () => {
 	  resultado.innerHTML = "";
 	});
-
+	
+	selectStatus.addEventListener("change", () => {
+	  resultado.innerHTML = "";
+	});
 
 	// ================= SELECIONA STATUS APÓS APARTAMENTO =================
 	selectApto.addEventListener("change", async () => {
@@ -644,13 +691,14 @@ btnDashboard.addEventListener("click", async () => {
 
 // ================= BOTÕES TORRES =================
 botoesTorre.forEach(btn => {
-  btn.addEventListener("click", async () => {
+  btn.addEventListener("click", () => {
     const torre = btn.dataset.torre;
 
     filtroTorre.value = torre;
     atualizarBotoesTorre(torre);
 
-    const dados = await carregarDados();
+    // 🔥 usa cache (não Firebase)
+    const dados = obterDadosCache();
 
     carregarGrid(dados);
     carregarDashboard(dados);
@@ -660,6 +708,7 @@ botoesTorre.forEach(btn => {
 
 	//filtroTorre.addEventListener("change", carregarGrid);
 filtroTorre.addEventListener("change", () => {
+
   const torre = filtroTorre.value;
 
   if (torre === "todas") {
@@ -668,16 +717,19 @@ filtroTorre.addEventListener("change", () => {
     atualizarBotoesTorre(torre);
   }
 
-  const dados = await carregarDados();
+  // 🔥 usa cache (não chama Firebase)
+  const dados = obterDadosCache();
 
-  carregarGrid();
-  carregarDashboard(); // 🔥 ADICIONA ISSO
+  carregarGrid(dados);
+  carregarDashboard(dados);
 });
 
 
+	filtroStatus.addEventListener("change", () => {
 
-	filtroStatus.addEventListener("change", async () => {
-  const dados = await carregarDados();
+  // 🔥 usa cache
+  const dados = obterDadosCache();
+
   carregarGrid(dados);
 });
 
@@ -688,3 +740,83 @@ filtroTorre.addEventListener("change", () => {
 	selectStatus.disabled = true;
 }
 );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ================= POPULAR BASE (USO MANUAL) =================
+
+window.popularBase = async function () {
+
+  console.log("🚀 Iniciando população dos dados...");
+
+  //const dataAgora = new Date();
+  //força data de teste
+  const dataAgora = new Date("2026-04-28T00:00:00Z");
+
+  let total = 0;
+
+  for (let torre = 1; torre <= 5; torre++) {
+
+    for (let andar = 0; andar <= 17; andar++) {
+
+      for (let i = 1; i <= 8; i++) {
+
+        let numero;
+
+        if (andar === 0) {
+          numero = String(i);
+        } else {
+          numero = andar + String(i).padStart(2, "0");
+        }
+
+        const id = `torre_${torre}_apto_${numero}`;
+
+        await setDoc(doc(db, "vistorias", id), {
+          torre: String(torre),
+          apartamento: numero,
+          status: "aguardando_liberacao",
+          atualizadoEm: dataAgora
+        });
+
+        total++;
+
+        console.log(`✔ ${total} - Torre ${torre} | Apto ${numero}`);
+      }
+    }
+  }
+
+  console.log("🔥 FINALIZADO! 720 registros criados.");
+};
+
+
+// ================= LIMPAR BASE (USO MANUAL) =================
+
+window.limparBase = async function () {
+
+  console.log("🧹 Iniciando limpeza dos dados...");
+
+  const snapshot = await getDocs(collection(db, "vistorias"));
+
+  let total = 0;
+
+  for (const docItem of snapshot.docs) {
+    await deleteDoc(doc(db, "vistorias", docItem.id));
+
+    total++;
+    console.log(`🗑️ Removido: ${docItem.id}`);
+  }
+
+  console.log(`🔥 FINALIZADO! ${total} registros apagados.`);
+};
